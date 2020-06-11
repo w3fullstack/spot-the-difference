@@ -1,0 +1,208 @@
+{
+    "scenes": [
+        {
+            "name": "Monsters",
+            "width": 500,
+            "height": 650, 
+            "thumbnail": "assets/images/Scene01.png",
+            "images": ["assets/images/Scene01A.png", "assets/images/Scene01B.png"],
+            "differences": [
+                {
+                    "x": 113,
+                    "y": 151,
+                    "radius": 44
+                },
+                {
+                    "x": 375,
+                    "y": 208,
+                    "radius": 39
+                },
+                {
+                    "x": 226,
+                    "y": 582,
+                    "radius": 16
+                },
+                {
+                    "x": 428,
+                    "y": 570,
+                    "radius": 27
+                },
+                {
+                    "x": 403,
+                    "y": 298,
+                    "radius": 15
+                }
+            ]
+        },
+        {
+            "name": "Monsters",
+            "width": 500,
+            "height": 650, 
+            "thumbnail": "assets/images/Scene01.png",
+            "images": ["assets/images/Scene01A.png", "assets/images/Scene01B.png"],
+            "differences": [
+                {
+                    "x": 113,
+                    "y": 151,
+                    "radius": 44
+                },
+                {
+                    "x": 375,
+                    "y": 208,
+                    "radius": 39
+                },
+                {
+                    "x": 226,
+                    "y": 582,
+                    "radius": 16
+                },
+                {
+                    "x": 428,
+                    "y": 570,
+                    "radius": 27
+                },
+                {
+                    "x": 403,
+                    "y": 298,
+                    "radius": 15
+                }
+            ]
+        },
+        {
+            "name": "Monsters",
+            "width": 500,
+            "height": 650, 
+            "thumbnail": "assets/images/Scene01.png",
+            "images": ["assets/images/Scene01A.png", "assets/images/Scene01B.png"],
+            "differences": [
+                {
+                    "x": 113,
+                    "y": 151,
+                    "radius": 44
+                },
+                {
+                    "x": 375,
+                    "y": 208,
+                    "radius": 39
+                },
+                {
+                    "x": 226,
+                    "y": 582,
+                    "radius": 16
+                },
+                {
+                    "x": 428,
+                    "y": 570,
+                    "radius": 27
+                },
+                {
+                    "x": 403,
+                    "y": 298,
+                    "radius": 15
+                }
+            ]
+        },
+        {
+            "name": "Monsters",
+            "width": 500,
+            "height": 650, 
+            "thumbnail": "assets/images/Scene01.png",
+            "images": ["assets/images/Scene01A.png", "assets/images/Scene01B.png"],
+            "differences": [
+                {
+                    "x": 113,
+                    "y": 151,
+                    "radius": 44
+                },
+                {
+                    "x": 375,
+                    "y": 208,
+                    "radius": 39
+                },
+                {
+                    "x": 226,
+                    "y": 582,
+                    "radius": 16
+                },
+                {
+                    "x": 428,
+                    "y": 570,
+                    "radius": 27
+                },
+                {
+                    "x": 403,
+                    "y": 298,
+                    "radius": 15
+                }
+            ]
+        },
+        {
+            "name": "Monsters",
+            "width": 500,
+            "height": 650, 
+            "thumbnail": "assets/images/Scene01.png",
+            "images": ["assets/images/Scene01A.png", "assets/images/Scene01B.png"],
+            "differences": [
+                {
+                    "x": 113,
+                    "y": 151,
+                    "radius": 44
+                },
+                {
+                    "x": 375,
+                    "y": 208,
+                    "radius": 39
+                },
+                {
+                    "x": 226,
+                    "y": 582,
+                    "radius": 16
+                },
+                {
+                    "x": 428,
+                    "y": 570,
+                    "radius": 27
+                },
+                {
+                    "x": 403,
+                    "y": 298,
+                    "radius": 15
+                }
+            ]
+        },
+        {
+            "name": "Monsters",
+            "width": 500,
+            "height": 650, 
+            "thumbnail": "assets/images/Scene01.png",
+            "images": ["assets/images/Scene01A.png", "assets/images/Scene01B.png"],
+            "differences": [
+                {
+                    "x": 113,
+                    "y": 151,
+                    "radius": 44
+                },
+                {
+                    "x": 375,
+                    "y": 208,
+                    "radius": 39
+                },
+                {
+                    "x": 226,
+                    "y": 582,
+                    "radius": 16
+                },
+                {
+                    "x": 428,
+                    "y": 570,
+                    "radius": 27
+                },
+                {
+                    "x": 403,
+                    "y": 298,
+                    "radius": 15
+                }
+            ]
+        }
+    ]
+}
