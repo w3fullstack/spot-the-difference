@@ -15,6 +15,7 @@ var ChooseScene = new Phaser.Class({
         pageContainers: [], // page containers
         nCurrPage: 0,       // page index
         nTotalPages: 0,     // total pages
+        sprOutline: null    // border image
     },
 
     initialize: function ChooseScene() {
@@ -36,13 +37,17 @@ var ChooseScene = new Phaser.Class({
         this.state = {...this.state, nThemes};
         this.calcSize();
         // add background image
-        const bg = this.add.sprite(GAME_WIDTH/2, GAME_HEIGHT/2, "bg");
+        const bg = this.add.sprite(GAME_WIDTH/2, GAME_HEIGHT/2, currentTheme.backImage);
         bg.setDisplaySize(GAME_WIDTH, GAME_HEIGHT);
 
         const { nRow, nCol, fGap, fCardWidth, fCardHeight, pageContainers } = this.state;
         let pageIndex = 0;
         let page = null;
         let index = 0;
+
+        const sprOutline = this.add.rectangle(GAME_WIDTH/2, GAME_HEIGHT/2, fCardWidth+20, fCardHeight+20, currentTheme.cardBorderColor);
+        sprOutline.setVisible(false);
+        this.state = {...this.state, sprOutline}
 
         for (let i = 0 ; i < nThemes ; i++) {
             // create page
@@ -91,18 +96,19 @@ var ChooseScene = new Phaser.Class({
      * @param {*} container container to put theme image & label
      */
     createCard: function(index, x, y, w, h, container) {
-        const { nThemes, fCardWidth, fCardHeight } = this.state;
+        const { nThemes, fCardWidth, fCardHeight, sprOutline } = this.state;
         const self = this;
 
         // create sprite
         const sprite = this.add.sprite(x, y, `theme${index}`).setInteractive();
         
         sprite.setDisplaySize(w, h);
-        sprite.alpha = 0.8;
         sprite.index = index;
         
         sprite.on('pointerover', function(e) {
-            this.alpha = 1;
+            sprOutline.x = this.x;
+            sprOutline.y = this.y;
+            sprOutline.setVisible(true);
         });
         sprite.on('pointerdown', function(e) {
             // check controlsEnabled
@@ -119,7 +125,7 @@ var ChooseScene = new Phaser.Class({
             });
         });
         sprite.on('pointerout', function(e) {
-            this.alpha = 0.8;
+            sprOutline.setVisible(false);
         });
         
         // create label (x/y)

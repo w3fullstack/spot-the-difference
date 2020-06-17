@@ -10,6 +10,7 @@ var GameScene = new Phaser.Class({
         fImgHeight: 0,                  // diff image height
 
         isShowFounds: false,            // found ?
+        isRevealed: false,              // revealed unfound images
         themeData: null,                // theme data
         nWrongTry: 0,                   // counter of wrong try
         nFound: 0,                      // counter found
@@ -19,10 +20,14 @@ var GameScene = new Phaser.Class({
         imgRight: null,                 // right image container
         lblFound: null,                 // label found
         lblTries: null,                 // label tries
+        tltpShow: null,                 // tooltip for `show for student`
+        tltpHide: null,                 // tooltip for `hide for student`
         btnShowStudent: null,           // button `Show for Student`
         btnHideStudent: null,           // button `Hide for Student`
         btnShowWon: null,               // button `Show Won`
-        btnRevealMe: null               // button `Reveal for Me`
+        btnRevealMe: null,              // button `Reveal for Me`
+        btnHideMe: null,                // button `Hide for Me`
+        sprCircles: [],                 // uncovered circles
     },
 
     initialize: function GameScene() {  
@@ -31,7 +36,27 @@ var GameScene = new Phaser.Class({
     init: function(data) {
         console.log(game)
         gThemeIndex = data.themeIndex;
+        
         const themeData = {...gGameData[gThemeIndex]};
+        const fGap = 0;
+        const fImgWidth = 0;
+        const fImgHeight = 0;
+        const isShowFounds = false;
+        const isRevealed = false;
+        const nWrongTry = 0;
+        const nFound = 0;
+        const isGameEnded = false;
+        const imgRight = null;
+        const lblFound = null;
+        const lblTries = null;
+        const btnShowStudent = null;
+        const btnHideStudent = null;
+        const btnShowWon = null;
+        const btnRevealMe = null;
+        const btnHideMe = null;
+        const sprCircles = [];
+
+        // initialize
         for (const index in themeData.differences) {
             themeData.differences[index].founded = false;
         }
@@ -49,6 +74,28 @@ var GameScene = new Phaser.Class({
         else {
             this.state = {...this.state, themeData};
         }
+
+        this.state = {
+            ...this.state,
+            fGap,
+            fImgWidth,
+            fImgHeight,
+            isShowFounds,
+            isRevealed,
+            nWrongTry,
+            nFound,
+            isGameEnded,
+            imgRight,
+            lblFound,
+            lblTries,
+            btnShowStudent,
+            btnHideStudent,
+            btnShowWon,
+            btnRevealMe,
+            btnHideMe,
+            sprCircles
+        }
+
     },
     preload: function() {
         const {themeData} = this.state;
@@ -65,13 +112,15 @@ var GameScene = new Phaser.Class({
         this.load.image('btnHideStudent', 'assets/images/btnHideStudent.png');
         this.load.image('btnShowWon', 'assets/images/btnShowWon.png');
         this.load.image('btnRevealMe', 'assets/images/btnRevealMe.png');
+        this.load.image('btnHideMe', 'assets/images/btnHideMe.png');
+        this.load.image('btnGallery', 'assets/images/btnGallery.png');
     },
     create: function() {
         gGameStarted = true;
 
         const { fImgWidth, fImgHeight, fGap, themeData, nFound } = this.state;
         // add background image
-        const bg = this.add.sprite(GAME_WIDTH/2, GAME_HEIGHT/2, "bg");
+        const bg = this.add.sprite(GAME_WIDTH/2, GAME_HEIGHT/2, currentTheme.backImage);
         bg.setDisplaySize(GAME_WIDTH, GAME_HEIGHT);
         // add diff images
         const imgLeft = this.createImage(fGap, 50, fImgWidth, fImgHeight, "diff1");
@@ -80,22 +129,52 @@ var GameScene = new Phaser.Class({
         const lblbg = this.add.sprite(10, 25, "lblbg");
         lblbg.setOrigin(0, 0.5);
 
-        const lblFound = this.add.text(110, 25, ``, {fontFamily: 'arial', fontSize: '20px', color: 0xffffff});
+        const lblFound = this.add.text(150, 25, ``, {fontFamily: 'arial', fontSize: '20px', color: 0xffffff});
         lblFound.setOrigin(0.5, 0.5);
-        // add tries label
+        
+        // create tooltips
+        const tltpShow = this.add.text(330, 50, `Show number of found differences for the student`, {
+            fontFamily: 'arial', 
+            fontSize: '20px', 
+            stroke: '#000', 
+            strokeThickness: 0.1, 
+            wordWrap: {
+                width: 300
+            },
+            align: 'center',
+            color: 0xffffff});
+        tltpShow.setOrigin(0.5, 0.0);
+        tltpShow.setVisible(false);       
+
+        const tltpHide = this.add.text(330, 50, `Hide number of found differences for the student`, {
+            fontFamily: 'arial', 
+            fontSize: '20px', 
+            stroke: '#000', 
+            strokeThickness: 0.1, 
+            wordWrap: {
+                width: 300
+            },
+            align: 'center',
+            color: 0xffffff});
+        tltpHide.setOrigin(0.5, 0.0);
+        tltpHide.setVisible(false);
         // create buttons
-        const btnShowStudent = this.createButton('btnShowStudent', 395, 25, 231, 35, this.onClickShowStudent, this)
-        const btnHideStudent = this.createButton('btnHideStudent', 395, 25, 231, 35, this.onClickHideStudent, this)
-        const btnRevealMe = this.createButton('btnRevealMe', 635, 25, 231, 35, this.onClickRevealMe, this)
-        const btnShowWon = this.createButton('btnShowWon', 875, 25, 231, 35, this.onClickEnd, this)
+        const btnShowStudent = this.createButton('btnShowStudent', 330, 25, 62, 44, this.onClickShowStudent, this, tltpShow);
+        const btnHideStudent = this.createButton('btnHideStudent', 330, 25, 62, 44, this.onClickHideStudent, this, tltpHide);
+        const btnRevealMe = this.createButton('btnRevealMe', 635, 25, 231, 35, this.onClickRevealMe, this);
+        const btnHideMe = this.createButton('btnHideMe', 635, 25, 231, 35, this.onClickRevealMe, this);
+        const btnShowWon = this.createButton('btnShowWon', 875, 25, 231, 35, this.onClickEnd, this);
+
         btnShowStudent.setVisible(false);
         btnHideStudent.setVisible(false);
         btnRevealMe.setVisible(false);
+        btnHideMe.setVisible(false);
         btnShowWon.setVisible(false);
         // if therapist, hide buttons
         if (isGameMaster()) {
             btnShowStudent.setVisible(true);
             btnRevealMe.setVisible(true);
+            btnHideMe.setVisible(false);
             btnShowWon.setVisible(true);
         }
         // update state
@@ -109,7 +188,10 @@ var GameScene = new Phaser.Class({
             btnHideStudent,
             btnShowWon,
             btnRevealMe,
-            isShowFounds: (currentPlayer && currentPlayer.gamemaster) ? true : false
+            btnHideMe,
+            tltpShow,
+            tltpHide,
+            isShowFounds: (currentPlayer && currentPlayer.gamemaster && currentPlayer.isLocal) ? true : false
         };
         this.updateBoardPos();
         this.updateLabel();
@@ -136,10 +218,9 @@ var GameScene = new Phaser.Class({
         container.x = x;
         container.y = y;
         container.setSize(w, h);
-        console.log(container)
         const image = this.add.sprite(w/2, h/2, name).setInteractive();
         image.setDisplaySize(w, h);
-
+        console.log(image)
         container.add(image);
         image.on('pointerdown', function(pt, x, y, e) {
             // check controlsEnabled
@@ -170,8 +251,8 @@ var GameScene = new Phaser.Class({
      * @param {boolean} flag 
      */
     toggleShowFound: function(isShowFounds) {
-        this.state = {...this.state, isShowFounds};
         if (currentPlayer && currentPlayer.gamemaster && currentPlayer.isLocal) return;
+        this.state = {...this.state, isShowFounds};
         this.updateLabel();
     },
     /**
@@ -180,7 +261,7 @@ var GameScene = new Phaser.Class({
     updateLabel: function() {
         const { lblFound, isShowFounds, nFound, nWrongTry, themeData } = this.state;
         const nTotalDiffs = themeData.differences.length;
-        lblFound.text = (isShowFounds ? `${nFound} of ${nTotalDiffs} - ` : "") + `${nWrongTry} clicks`;
+        lblFound.text = (isShowFounds ? `Found ${nFound} of ${nTotalDiffs} - ` : "") + (currentPlayer && currentPlayer.gamemaster && currentPlayer.isLocal ? `${nWrongTry} Attempts` : "");
     },
     /**
      * handle click event
@@ -216,6 +297,8 @@ var GameScene = new Phaser.Class({
             let { nWrongTry } = this.state;
             nWrongTry++;
             this.state = {...this.state, nWrongTry};
+            this.showXeffect(x1, y1, imgLeft);
+            this.showXeffect(x1, y1, imgRight);
         }
         else {
             let { nFound } = this.state;
@@ -239,9 +322,10 @@ var GameScene = new Phaser.Class({
      */
     drawCircle: function(x, y, radius, img1, img2) {
         // draw circle1
-        this.createCircle(x, y, radius, img1, 0xff0000);
+        const circle1 = this.createCircle(x, y, radius, img1, 0xff0000);
         // draw dircle2
-        this.createCircle(x, y, radius, img2, 0xff0000);
+        const circle2 =this.createCircle(x, y, radius, img2, 0xff0000);
+        return [circle1, circle2];
     },
     /**
      * draw circle on image
@@ -271,13 +355,15 @@ var GameScene = new Phaser.Class({
      * @param {float} w
      * @param {float} h
      */
-    createButton: function(name, x, y, w, h, callback, sender) {
+    createButton: function(name, x, y, w, h, callback, sender, tooltip=null) {
         const {isGameEnded} = this.state;
         const image = this.add.sprite(x, y, name).setInteractive();
         image.setDisplaySize(w, h);
         image.setOrigin(0.5, 0.5);
        
         image.on('pointerover', function(e) {
+            if (isGameEnded) return;
+            if (tooltip) tooltip.setVisible(true);
         });
         image.on('pointerdown', function(e) {
             if (isGameEnded) return;
@@ -286,18 +372,43 @@ var GameScene = new Phaser.Class({
         });
         image.on('pointerout', function(e) {
             this.alpha = 1;
+            if (isGameEnded) return;
+            if (tooltip) tooltip.setVisible(false);
         });
         image.on('pointerup', function(e) {
             this.alpha = 1;
         });
         return image;
     },
-
+    /**
+     * show x effect on wrong position
+     * @param {float} x 
+     * @param {float} y 
+     */
+    showXeffect: function(x, y, container) {
+        const lblx = this.add.text(x, y, `X`, {fontFamily: 'arial', fontSize: '50px', color: 0xffffff});
+        lblx.setOrigin(0.5, 0.5);
+        container.add(lblx);
+        this.tweens.add({
+            targets: lblx,
+            scale: { from: 0, to: 1},
+            ease: 'Bounce',
+            duration: 500,
+            onComplete: function() {
+                lblx.destroy();
+            }
+        });
+    },
     /**
      * show Great Job when all differences were found
      */
     showGreatJob: function() {
         if (this.state.isGameEnded) return;
+
+        const rect = this.add.rectangle(GAME_WIDTH/2, GAME_HEIGHT/2, GAME_WIDTH, GAME_HEIGHT, 0xffffff);
+        rect.setFillStyle(0xffffff, 0.8);
+
+        this.createButton('btnGallery', GAME_WIDTH/2, GAME_HEIGHT/2+100, 244, 43, this.onClickGallery, this);
 
         const isGameEnded = true;
         this.state = {...this.state, isGameEnded};
@@ -307,7 +418,7 @@ var GameScene = new Phaser.Class({
                 fontSize: '105px',
                 color: '#fff',
                 stroke: '#000000',
-                strokeThickness: 10,
+                strokeThickness: 10
             }
             const label = this.add.text(GAME_WIDTH/2, GAME_HEIGHT/2, `Great Job!`, style);
             label.setOrigin(0.5, 0.5);
@@ -323,6 +434,19 @@ var GameScene = new Phaser.Class({
                     }
                 });
         }, 1000);
+    },
+    /**
+     * click event for `go to gallery`
+     */
+    onClickGallery: function() {
+        const type = "goToGallery";
+        sendToGameshell({
+            eventType: "sendToAll",
+            message: {
+                type,
+                data: {}
+            }
+        });
     },
     /**
      * click event for `Show for Student`
@@ -364,13 +488,34 @@ var GameScene = new Phaser.Class({
      * click event for `Reveal for Me`
      */
     onClickRevealMe: function() {
-        const {themeData, imgLeft, imgRight} = this.state;
-        for (let difference of themeData.differences) {
-            const {x, y, radius, founded} = difference;
-            if (!founded) {
-                this.drawCircle(x, y, radius, imgLeft, imgRight);
+        const {themeData, imgLeft, imgRight, btnRevealMe, btnHideMe, isGameEnded} = this.state;
+        if (isGameEnded) return;
+
+        let {sprCircles, isRevealed} = this.state;
+        // if clicked `reveal for me`
+        if (isRevealed) {
+            btnRevealMe.setVisible(true);
+            btnHideMe.setVisible(false);
+            // remove uncovered circles
+            for (const circle of sprCircles) {
+                circle.destroy(true);
+            }
+            sprCircles = [];
+        }
+        // if clicked `hide for me`
+        else {
+            btnRevealMe.setVisible(false);
+            btnHideMe.setVisible(true);
+            // add uncovered circles
+            for (let difference of themeData.differences) {
+                const {x, y, radius, founded} = difference;
+                if (!founded) {
+                    sprCircles = [...sprCircles, ...this.drawCircle(x, y, radius, imgLeft, imgRight)];
+                }
             }
         }
+        isRevealed = !isRevealed;
+        this.state = {...this.state, sprCircles, isRevealed}
     },
     /**
      * click event for `Show Won`

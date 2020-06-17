@@ -5,18 +5,18 @@ const GAME_HEIGHT = 700;
 // theme can be chosen from this list
 let themes = {
     default: {
-        backImage: "./assets/images/background.png"
+        backImage: "./assets/images/background.png",
+        cardBorderColor: 0xff0000
     },
     tinyeye: {
-        backImage: "./assets/images/background.png"
+        backImage: "./assets/images/background.png",
+        cardBorderColor: 0xff0000
 }
 };
 
 var gGameData = [];
 var gThemeIndex = 0;
 var gGameStarted = false;
-
-let gCurrentTheme = "default";
 
 let currentThemeName = "default";
 let currentTheme = themes["default"];

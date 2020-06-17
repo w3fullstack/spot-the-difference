@@ -164,7 +164,7 @@ bindEvent(window, "message", function(e) {
       break;
 
     case "setTheme":
-      // setThemeHook(message.data);
+      setThemeHook(message.data);
       break;
 
     case "setGameset":

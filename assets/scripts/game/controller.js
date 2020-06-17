@@ -69,19 +69,21 @@ function startGame(startingPlayerId = null) {
     // if (startingPlayerId) {
     //     gCurrentPlayer = gPlayers[startingPlayerId];
     // }
-    // start new game
-    const config = {
-        type: Phaser.AUTO,
-        width: GAME_WIDTH,
-        height: GAME_HEIGHT,
-        parent: "game",
-        scale: {
-            mode: Phaser.Scale.FIT,
-            autoCenter: Phaser.Scale.CENTER_BOTH
-        },
-        scene: [LoadScene, ChooseScene, GameScene]
-    };
-    game = new Phaser.Game(config);
+    setTimeout(() => {
+            // start new game
+        const config = {
+            type: Phaser.AUTO,
+            width: GAME_WIDTH,
+            height: GAME_HEIGHT,
+            parent: "game",
+            scale: {
+                mode: Phaser.Scale.FIT,
+                autoCenter: Phaser.Scale.CENTER_BOTH
+            },
+            scene: [LoadScene, ChooseScene, GameScene]
+        };
+        game = new Phaser.Game(config);
+    }, 1000);
 }
 
 /**
@@ -234,22 +236,12 @@ function setGameshellInfoHook(gameshellInfo) {
  * @param {string} theme Name of theme to be applied.
  */
 function setThemeHook(theme) {
-  // change the theme
-  setTheme(theme);
-
-  // since changing the theme will affect the cards
-  // check if the game is already started
-  if (isGameStarted()) {
-    // then restart it again
-    startGame();
-  }
-
   // send message to all other games to change their themes
   sendToGameshell({
     eventType: "sendToAll",
     message: {
       type: "setTheme",
-      data: { theme: theme, cardsOrder: cardsOrder }
+      data: { theme: theme }
     }
   });
 }
@@ -556,11 +548,6 @@ function userLeft(message) {
  * @param {*} message Data object containing a 'message' and it's associated 'data'
  */
 function handleGameMessageHook(message) {
-  console.log("~~~ handleGameMessageHook");
-  console.log(message);
-  console.log("currentPlayer", currentPlayer);
-  console.log("players", players);
-  console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
   // if game is not ready yet
   if (!isGameReady) {
     // then store the message in a queue
@@ -577,43 +564,56 @@ function handleGameMessageHook(message) {
     case "startGame":
             startGame(data.startingPlayerId);
             break;
-        case "endGame":
-            endGame();
-            break;
-        case "setLocalPlayers":
-            break;
-        case "pickedScene":
-            if (game) {
-                game.scene.start('GameScene', {themeIndex: gThemeIndex});
-            }
-            break;
-        case "showForStudent":
-            game.scene.scenes[2].toggleShowFound(true);
-            break;
-        case "hideForStudent":
-            game.scene.scenes[2].toggleShowFound(false);
-            break;
-        case "getGameState":
-            break;
-        case "showWin":
-            game.scene.scenes[2].showGreatJob();
-            break;
-        case "playersOnline":
-            playersOnline(data);
-            break;        
-        case "playersOffline":
-            playersOffline(data);
-            break;
-        case "imageClicked":
-            if (message.loggedInPersonId === message.senderPersonId) return;
-            game.scene.scenes[2].handleClick(data.x, data.y);
-            break;
-        case "updatePlayerControls":
-            updatePlayerControls(data);
-            break;
-        case "updateCurrentPlayer":
-            updateCurrentPlayer(data);
-            break;
+    case "endGame":
+        endGame();
+        break;
+    case "setLocalPlayers":
+        break;
+    case "pickedScene":
+        if (game) {
+            game.scene.stop('ChooseScene');
+            game.scene.start('GameScene', {themeIndex: gThemeIndex});
+        }
+        break;
+    case "goToGallery":
+        if (game) {
+            game.scene.stop('GameScene');
+            game.scene.start('ChooseScene');
+        }
+        break;
+    case "showForStudent":
+        game.scene.scenes[2].toggleShowFound(true);
+        break;
+    case "hideForStudent":
+        game.scene.scenes[2].toggleShowFound(false);
+        break;
+    case "getGameState":
+        break;
+    case "showWin":
+        game.scene.scenes[2].showGreatJob();
+        break;
+    case "playersOnline":
+        playersOnline(data);
+        break;        
+    case "playersOffline":
+        playersOffline(data);
+        break;
+    case "imageClicked":
+        if (message.loggedInPersonId === message.senderPersonId) return;
+        game.scene.scenes[2].handleClick(data.x, data.y);
+        break;
+    case "updatePlayerControls":
+        updatePlayerControls(data);
+        break;
+    case "updateCurrentPlayer":
+        updateCurrentPlayer(data);
+        break;
+    case "setTheme":
+        if (isGameStarted()) {
+            startGame(data.startingPlayerId);
+        };
+        setTheme(data);
+        break;
   }
 }
 
