@@ -9,7 +9,7 @@ var ChooseScene = new Phaser.Class({
         nThemes: 0,
         nRow: 2,            // theme cards rows
         nCol: 4,            // theme cards cols
-        fGap: 20,           // gap between cards
+        fGap: 5,           // gap between cards
         fCardWidth: 0,      // card width
         fCardHeight: 0,     // card height
         pageContainers: [], // page containers
@@ -26,7 +26,6 @@ var ChooseScene = new Phaser.Class({
         gGameData.forEach((theme, index) => {
             this.load.image(`theme${index}`, theme.thumbnail);
         });
-        this.load.image('bg', 'assets/images/background.png');
         this.load.image('prev', 'assets/images/prev.png');
         this.load.image('next', 'assets/images/next.png');
     },
@@ -36,16 +35,13 @@ var ChooseScene = new Phaser.Class({
         const nThemes = gGameData.length;
         this.state = {...this.state, nThemes};
         this.calcSize();
-        // add background image
-        const bg = this.add.sprite(GAME_WIDTH/2, GAME_HEIGHT/2, currentTheme.backImage);
-        bg.setDisplaySize(GAME_WIDTH, GAME_HEIGHT);
 
         const { nRow, nCol, fGap, fCardWidth, fCardHeight, pageContainers } = this.state;
         let pageIndex = 0;
         let page = null;
         let index = 0;
 
-        const sprOutline = this.add.rectangle(GAME_WIDTH/2, GAME_HEIGHT/2, fCardWidth+20, fCardHeight+20, currentTheme.cardBorderColor);
+        const sprOutline = this.add.rectangle(GAME_WIDTH/2, GAME_HEIGHT/2, fCardWidth+2*fGap, fCardHeight+2*fGap, currentTheme.cardBorderColor);
         sprOutline.setVisible(false);
         this.state = {...this.state, sprOutline}
 
@@ -151,7 +147,8 @@ var ChooseScene = new Phaser.Class({
         const self = this;
 
         // prev
-        const btnPrev = this.add.sprite(50, GAME_HEIGHT/2, 'prev').setInteractive();
+        const btnPrev = this.add.sprite(0, GAME_HEIGHT/2, 'prev').setInteractive();
+        btnPrev.setOrigin(0, 0.5);
         btnPrev.alpha = 0.5;
         btnPrev.on('pointerover', function(e) {
             this.alpha = 1;
@@ -177,7 +174,8 @@ var ChooseScene = new Phaser.Class({
         });
 
         // next
-        const btnNext = this.add.sprite(GAME_WIDTH-50, GAME_HEIGHT/2, 'next').setInteractive();
+        const btnNext = this.add.sprite(GAME_WIDTH, GAME_HEIGHT/2, 'next').setInteractive();
+        btnNext.setOrigin(1, 0.5);
         btnNext.alpha = 0.5;
         btnNext.on('pointerover', function(e) {
             this.alpha = 1;

@@ -80,7 +80,7 @@ function startGame(startingPlayerId = null) {
                 mode: Phaser.Scale.FIT,
                 autoCenter: Phaser.Scale.CENTER_BOTH
             },
-            scene: [LoadScene, ChooseScene, GameScene]
+            scene: [ChooseScene, GameScene]
         };
         game = new Phaser.Game(config);
     }, 1000);
@@ -582,15 +582,15 @@ function handleGameMessageHook(message) {
         }
         break;
     case "showForStudent":
-        game.scene.scenes[2].toggleShowFound(true);
+        game.scene.scenes[1].toggleShowFound(true);
         break;
     case "hideForStudent":
-        game.scene.scenes[2].toggleShowFound(false);
+        game.scene.scenes[1].toggleShowFound(false);
         break;
     case "getGameState":
         break;
     case "showWin":
-        game.scene.scenes[2].showGreatJob();
+        game.scene.scenes[1].showGreatJob();
         break;
     case "playersOnline":
         playersOnline(data);
@@ -600,7 +600,7 @@ function handleGameMessageHook(message) {
         break;
     case "imageClicked":
         if (message.loggedInPersonId === message.senderPersonId) return;
-        game.scene.scenes[2].handleClick(data.x, data.y);
+        game.scene.scenes[1].handleClick(data.x, data.y);
         break;
     case "updatePlayerControls":
         updatePlayerControls(data);
