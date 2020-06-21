@@ -26,8 +26,9 @@ var ChooseScene = new Phaser.Class({
         gGameData.forEach((theme, index) => {
             this.load.image(`theme${index}`, theme.thumbnail);
         });
-        this.load.image('prev', 'assets/images/prev.png');
-        this.load.image('next', 'assets/images/next.png');
+        console.log("currentTheme", currentTheme)
+        this.load.image('prev', currentTheme.leftButton);
+        this.load.image('next', currentTheme.rightButton);
     },
 
     create: function() {
@@ -149,11 +150,12 @@ var ChooseScene = new Phaser.Class({
         // prev
         const btnPrev = this.add.sprite(0, GAME_HEIGHT/2, 'prev').setInteractive();
         btnPrev.setOrigin(0, 0.5);
-        btnPrev.alpha = 0.5;
+        btnPrev.alpha = 1;
         btnPrev.on('pointerover', function(e) {
             this.alpha = 1;
         });
         btnPrev.on('pointerdown', function(e) {
+            this.alpha = 0.9;
             // check controlsEnabled
             if (currentPlayer && !currentPlayer.controlsEnabled) return;
             // if controls is enabled
@@ -162,7 +164,7 @@ var ChooseScene = new Phaser.Class({
                     const tween = self.tweens.add({
                         targets: page,
                         x: page.x + GAME_WIDTH,
-                        duration: 400
+                        duration: 200
                     });
                     self.state = {...self.state, nCurrPage};
                 }
@@ -170,15 +172,15 @@ var ChooseScene = new Phaser.Class({
             }
         });
         btnPrev.on('pointerout', function(e) {
-            this.alpha = 0.5;
+            this.alpha = 1;
         });
 
         // next
         const btnNext = this.add.sprite(GAME_WIDTH, GAME_HEIGHT/2, 'next').setInteractive();
         btnNext.setOrigin(1, 0.5);
-        btnNext.alpha = 0.5;
+        btnNext.alpha = 1;
         btnNext.on('pointerover', function(e) {
-            this.alpha = 1;
+            this.alpha = 0.9;
         });
         btnNext.on('pointerdown', function(e) {
             // check controlsEnabled
@@ -189,7 +191,7 @@ var ChooseScene = new Phaser.Class({
                     const tween = self.tweens.add({
                         targets: page,
                         x: page.x - GAME_WIDTH,
-                        duration: 400
+                        duration: 200
                     });
                     self.state = {...self.state, nCurrPage};
                 }
@@ -197,7 +199,7 @@ var ChooseScene = new Phaser.Class({
             }
         });
         btnNext.on('pointerout', function(e) {
-            this.alpha = 0.5;
+            this.alpha = 1;
         });
     }
 }); 

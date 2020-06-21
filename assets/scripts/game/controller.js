@@ -25,7 +25,7 @@ function initialized() {
         width: 1000,
         height: 700,
         autoScale: true,
-        isTurnTaking: true,
+        isTurnTaking: false,
         allowGameCardNavigation: false
     });
 
@@ -43,9 +43,10 @@ function initialized() {
  * Sets the current theme for the game
  * @param {String} themeName the name of the theme to use
  */
-function setTheme(themeName = "default") {
-  currentThemeName = themeName;
-  currentTheme = themes[themeName];
+function setTheme(themeName = {theme: "default"}) {
+  currentThemeName = themeName.theme;
+  console.log(currentThemeName)
+  currentTheme = themes[currentThemeName];
 }
 
 /**
@@ -341,30 +342,6 @@ function setPlayersHook(allPlayers) {
         players: allPlayers
       }
     }
-  });
-}
-
-/**
- * Sets the current selected player currently controls-enabled/allowed to play the game
- *
- * @param {*} player Player object {id, name, controlsEnabled}
- */
-function setCurrentPlayerHook(player) {
-  updateCurrentPlayer(player);
-
-  // inform other game instances
-  sendToGameshell({
-    eventType: "sendToAll",
-    message: {
-      type: "updateCurrentPlayer",
-      data: player
-    }
-  });
-
-  // inform Gameshell about player change
-  sendToGameshell({
-    eventType: "setCurrentPlayer",
-    message: currentPlayer
   });
 }
 

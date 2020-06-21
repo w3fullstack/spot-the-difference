@@ -6,12 +6,54 @@ const GAME_HEIGHT = 700;
 let themes = {
     default: {
         backImage: "./assets/images/background.png",
-        cardBorderColor: 0xff0000
+        cardBorderColor: 0xff0000,
+        foundSpotColor: 0x0000ff,
+        revealedSpotColor: 0xffff00,
+        wrongSpotColor: '#ff0000',
+        glowSpotColor: 0xffffff,
+        leftButton: "./assets/images/prev.png",
+        rightButton: "./assets/images/next.png",
+        showButton: "./assets/images/btnShowStudent.png",
+        hideButton: "./assets/images/btnHideStudent.png",
+        downButton: "./assets/images/down.png",
+        upButton: "./assets/images/up.png",
+        galleryButton: "./assets/images/btnGallery.png",
+        revealButton: "./assets/images/btnRevealMe.png",
+        unrevealButton: "./assets/images/btnHideMe.png",
+        winButton: "./assets/images/btnShowWon.png",
+        winMessageImage: "./assets/images/sprWin.png",
+        foundBackgroundImage: "./assets/images/sprFoundbg.png",
+        foundPanelImage: "./assets/images/sprFoundFrame.png",
+        // galleryBackgroundImage: "./assets/images/background.png.png",
+        // galleryFrameImage: "./assets/images/background.png",
+        separatorImage: "./assets/images/sprSeparater.png",
+        menuBackgroundImage: "./assets/images/sprMenuBg.png"
     },
     tinyeye: {
         backImage: "./assets/images/background.png",
-        cardBorderColor: 0xff0000
-}
+        cardBorderColor: 0xff0000,
+        foundSpotColor: 0x0000ff,
+        revealedSpotColor: 0xffff00,
+        wrongSpotColor: '#ff0000',
+        glowSpotColor: 0xffffff,
+        leftButton: "./assets/images/prev.png",
+        rightButton: "./assets/images/next.png",
+        showButton: "./assets/images/btnShowStudent.png",
+        hideButton: "./assets/images/btnHideStudent.png",
+        downButton: "./assets/images/down.png",
+        upButton: "./assets/images/up.png",
+        galleryButton: "./assets/images/btnGallery.png",
+        revealButton: "./assets/images/btnRevealMe.png",
+        unrevealButton: "./assets/images/btnHideMe.png",
+        winButton: "./assets/images/btnShowWon.png",
+        winMessageImage: "./assets/images/sprWin.png",
+        foundBackgroundImage: "./assets/images/sprFoundbg.png",
+        foundPanelImage: "./assets/images/sprFoundFrame.png",
+        // galleryBackgroundImage: "./assets/images/background.png.png",
+        // galleryFrameImage: "./assets/images/background.png",
+        separatorImage: "./assets/images/sprSeparater.png",
+        menuBackgroundImage: "./assets/images/sprMenuBg.png"
+    }
 };
 
 var gGameData = [];

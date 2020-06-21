@@ -196,7 +196,7 @@ bindEvent(window, "message", function(e) {
       break;
 
     case "setCurrentPlayer":
-      setCurrentPlayerHook(message.data);
+      // setCurrentPlayerHook(message.data);
       break;
 
     case "updatePlayerControls":

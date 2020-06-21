@@ -120,19 +120,21 @@ var GameScene = new Phaser.Class({
         // load assets
         this.load.image('diff1', themeData.images[0]);
         this.load.image('diff2', themeData.images[1]);
-        this.load.image('sprSeparater', 'assets/images/sprSeparater.png');
-        this.load.image('sprFoundFrame', 'assets/images/sprFoundFrame.png');
-        this.load.image('sprFoundbg', 'assets/images/sprFoundbg.png');
-        this.load.image('btnShowStudent', 'assets/images/btnShowStudent.png');
-        this.load.image('btnHideStudent', 'assets/images/btnHideStudent.png');
-        this.load.image('btnShowWon', 'assets/images/btnShowWon.png');
-        this.load.image('btnRevealMe', 'assets/images/btnRevealMe.png');
-        this.load.image('btnHideMe', 'assets/images/btnHideMe.png');
-        this.load.image('btnGallery', 'assets/images/btnGallery.png');
-        this.load.image('sprWin', 'assets/images/sprWin.png');
-        this.load.image('sprMenuBg', 'assets/images/sprMenuBg.png');
-        this.load.image('btnCollapse', 'assets/images/up.png');
-        this.load.image('btnExpand', 'assets/images/down.png');
+        this.load.image('sprSeparater', currentTheme.separatorImage);
+        this.load.image('sprFoundFrame', currentTheme.foundPanelImage);
+        this.load.image('sprFoundbg', currentTheme.foundBackgroundImage);
+        this.load.image('btnShowStudent', currentTheme.showButton);
+        this.load.image('btnHideStudent', currentTheme.hideButton);
+        this.load.image('btnShowWon', currentTheme.winButton);
+        this.load.image('btnRevealMe', currentTheme.revealButton);
+        this.load.image('btnHideMe', currentTheme.unrevealButton);
+        this.load.image('btnGallery', currentTheme.galleryButton);
+        this.load.image('sprWin', currentTheme.winMessageImage);
+        this.load.image('sprMenuBg', currentTheme.menuBackgroundImage);
+        this.load.image('btnCollapse', currentTheme.upButton);
+        this.load.image('btnExpand', currentTheme.downButton);
+
+        console.log("currentTheme======", currentTheme);
     },
     create: function() {
         gGameStarted = true;
@@ -150,7 +152,7 @@ var GameScene = new Phaser.Class({
         const sprFoundFrame = this.add.sprite(GAME_WIDTH/2, 0, "sprFoundFrame");
         sprFoundFrame.setOrigin(0.5, 0);
 
-        const sprFoundbg = this.add.sprite(GAME_WIDTH/2, 0, "sprFoundbg");
+        const sprFoundbg = this.add.sprite(GAME_WIDTH/2, 10, "sprFoundbg");
         sprFoundbg.setOrigin(0.5, 0);
 
         const lblFound = this.add.text(GAME_WIDTH/2-20, 25, ``, {fontFamily: 'arial', fontSize: '20px', color: 0xffffff});
@@ -165,11 +167,11 @@ var GameScene = new Phaser.Class({
         const { controlPanel, btnExpand, btnCollapse, btnRevealMe, btnHideMe, btnShowWon, btnGallery } = this.createControlPanel();
 
         // create tooltips
-        const tltpShow = this.createTooltipLabel(`Show number of found differences for the student`, 665, 50, 20, 300, 0xffffff);
-        const tltpHide = this.createTooltipLabel(`Hide number of found differences for the student`, 665, 50, 20, 300, 0xffffff);
+        const tltpShow = this.createTooltipLabel(`Show number of found differences for the student`, 565, 50, 20, 300, '#ffffff');
+        const tltpHide = this.createTooltipLabel(`Hide number of found differences for the student`, 565, 50, 20, 300, '#ffffff');
         
-        const btnShowStudent = this.createButton('btnShowStudent', 665, 25, 40, 40, this.onClickShowStudent, this, tltpShow);
-        const btnHideStudent = this.createButton('btnHideStudent', 665, 25, 40, 40, this.onClickHideStudent, this, tltpHide);
+        const btnShowStudent = this.createButton('btnShowStudent', 565, 25, 40, 40, this.onClickShowStudent, this, tltpShow);
+        const btnHideStudent = this.createButton('btnHideStudent', 565, 25, 40, 40, this.onClickHideStudent, this, tltpHide);
 
         const bGameMaster = isGameMaster();
         btnShowStudent.setVisible(bGameMaster);
@@ -203,7 +205,7 @@ var GameScene = new Phaser.Class({
         for (let difference of themeData.differences) {
             const {x, y, radius, founded} = difference;
             if (founded) {
-                this.drawCircle(x, y, radius, imgLeft, imgRight);
+                this.drawCircle(x, y, radius, imgLeft, imgRight, currentTheme.foundSpotColor);
             }
         }
     },
@@ -254,12 +256,20 @@ var GameScene = new Phaser.Class({
      */
     createTooltipLabel: function(text, x, y, fontSize, wordwrapWidth, color) {
         const tltp = this.add.text(x, y, text, {
-            fontFamily: 'arial', 
+            fontFamily: 'arial',
+            backgroundColor: '#000000',
             fontSize, 
             wordWrap: { width: wordwrapWidth},
             align: 'center',
-            color
+            color,
+            padding: {
+                left: 5,
+                right: 5,
+                top: 5,
+                bottom: 5
+            }
         });
+        tltp.alpha = 0.7;
         tltp.setOrigin(0.5, 0.0);
         tltp.setVisible(false);
         return tltp;
@@ -332,9 +342,9 @@ var GameScene = new Phaser.Class({
      * update label - `x of y - z clicks`
      */
     updateLabel: function() {
-        const { lblFound, isShowFounds, nFound, nWrongTry, themeData } = this.state;
+        const { lblFound, nFound, themeData } = this.state;
         const nTotalDiffs = themeData.differences.length;
-        lblFound.text = `Found ${nFound} of ${nTotalDiffs}` + (currentPlayer && currentPlayer.gamemaster && currentPlayer.isLocal ? ` - ${nWrongTry} Attempts` : "");
+        lblFound.text = `Found ${nFound} of ${nTotalDiffs}`;
     },
     /**
      * handle click event
@@ -362,7 +372,7 @@ var GameScene = new Phaser.Class({
                     // found
                     wrong = false;
                     // draw circle1
-                    this.drawCircle(x, y, radius, imgLeft, imgRight);
+                    this.drawCircle(x, y, radius, imgLeft, imgRight, currentTheme.foundSpotColor);
                     break;
                 }
             }
@@ -399,11 +409,11 @@ var GameScene = new Phaser.Class({
      * @param {*} img1 
      * @param {*} img2 
      */
-    drawCircle: function(x, y, radius, img1, img2) {
+    drawCircle: function(x, y, radius, img1, img2, color) {
         // draw circle1
-        const circle1 = this.createCircle(x, y, radius, img1, 0xff0000);
+        const circle1 = this.createCircle(x, y, radius, img1, color);
         // draw dircle2
-        const circle2 =this.createCircle(x, y, radius, img2, 0xff0000);
+        const circle2 =this.createCircle(x, y, radius, img2, color);
         return [circle1, circle2];
     },
     /**
@@ -417,7 +427,7 @@ var GameScene = new Phaser.Class({
         const circle = this.add.circle(x, y, radius);
         circle.setStrokeStyle(5, color, 1);
         container.add(circle);
-
+        console.log(circle)
         this.tweens.add({
             targets: circle,
             scale: { from: 0, to: 1},
@@ -462,7 +472,7 @@ var GameScene = new Phaser.Class({
      * @param {float} y 
      */
     showXeffect: function(x, y, container) {
-        const lblx = this.add.text(x, y, `X`, {fontFamily: 'arial', fontSize: '50px', color: 0xffffff});
+        const lblx = this.add.text(x, y, `X`, {fontFamily: 'arial', fontSize: '50px', color: currentTheme.wrongSpotColor});
         lblx.setOrigin(0.5, 0.5);
         container.add(lblx);
         this.tweens.add({
@@ -488,21 +498,18 @@ var GameScene = new Phaser.Class({
         const self = this;
         this.state = {...this.state, isGameEnded};
 
-        setTimeout(() => {            
-            const style = {
-                fontSize: '105px',
-                color: '#fff',
-                stroke: '#000000',
-                strokeThickness: 10
-            }
-            const sprWin = this.add.sprite(GAME_WIDTH/2, GAME_HEIGHT/2-100, "sprWin").setInteractive();
+        setTimeout(() => {     
+            const dY = (currentPlayer && currentPlayer.gamemaster && currentPlayer.isLocal) ? 100 : 0;
+            const sprWin = this.add.sprite(GAME_WIDTH/2, GAME_HEIGHT/2-dY, "sprWin").setInteractive();
             this.tweens.add({
                 targets: sprWin,
                 scale: {from: 0, to: 1},
                 ease: 'Bounce',
                 duration: 300,
                 onComplete: function() {
-                    self.createButton('btnGallery', GAME_WIDTH/2, GAME_HEIGHT/2+100, 140, 40, self.onClickGallery, self);
+                    if (currentPlayer && currentPlayer.gamemaster && currentPlayer.isLocal) {
+                        self.createButton('btnGallery', GAME_WIDTH/2, GAME_HEIGHT/2+100, 140, 40, self.onClickGallery, self);
+                    }
                 }
             });
         }, 500);
@@ -586,7 +593,7 @@ var GameScene = new Phaser.Class({
                 x = x*500/themeData.width;
                 y = y*700/themeData.height;
                 if (!founded) {
-                    sprCircles = [...sprCircles, ...this.drawCircle(x, y, radius, imgLeft, imgRight)];
+                    sprCircles = [...sprCircles, ...this.drawCircle(x, y, radius, imgLeft, imgRight, currentTheme.revealedSpotColor)];
                 }
             }
         }
