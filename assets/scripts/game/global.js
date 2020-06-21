@@ -30,7 +30,7 @@ let themes = {
         menuBackgroundImage: "./assets/images/sprMenuBg.png"
     },
     tinyeye: {
-        backImage: "./assets/images/background.png",
+        backImage: "./assets/images/background2.png",
         cardBorderColor: 0xff0000,
         foundSpotColor: 0x0000ff,
         revealedSpotColor: 0xffff00,

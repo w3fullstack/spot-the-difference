@@ -109,7 +109,7 @@ var ChooseScene = new Phaser.Class({
         });
         sprite.on('pointerdown', function(e) {
             // check controlsEnabled
-            if (currentPlayer && !currentPlayer.controlsEnabled) return;
+            if (!isLocalPlayerEnabled()) return;
             // if controls is enabled
             gThemeIndex = this.index;
             // send picked image index
@@ -157,7 +157,7 @@ var ChooseScene = new Phaser.Class({
         btnPrev.on('pointerdown', function(e) {
             this.alpha = 0.9;
             // check controlsEnabled
-            if (currentPlayer && !currentPlayer.controlsEnabled) return;
+            if (!isLocalPlayerEnabled()) return;
             // if controls is enabled
             if (nCurrPage > 0) {
                 for (let page of pageContainers) {
@@ -184,7 +184,7 @@ var ChooseScene = new Phaser.Class({
         });
         btnNext.on('pointerdown', function(e) {
             // check controlsEnabled
-            if (currentPlayer && !currentPlayer.controlsEnabled) return;
+            if (!isLocalPlayerEnabled()) return;
             // if controls is enabled
             if (nCurrPage < nTotalPages-1) {
                 for (let page of pageContainers) {

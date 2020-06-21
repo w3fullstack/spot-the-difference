@@ -158,7 +158,8 @@ var GameScene = new Phaser.Class({
         const lblFound = this.add.text(GAME_WIDTH/2-20, 25, ``, {fontFamily: 'arial', fontSize: '20px', color: 0xffffff});
         lblFound.setOrigin(0.5, 0.5);
         
-        if (!(currentPlayer && currentPlayer.gamemaster && currentPlayer.isLocal)) {
+        const bGameMaster = isGameMaster();
+        if (!bGameMaster) {
             sprFoundFrame.setVisible(false);
             sprFoundbg.setVisible(false);
             lblFound.setVisible(false);
@@ -173,7 +174,6 @@ var GameScene = new Phaser.Class({
         const btnShowStudent = this.createButton('btnShowStudent', 565, 25, 40, 40, this.onClickShowStudent, this, tltpShow);
         const btnHideStudent = this.createButton('btnHideStudent', 565, 25, 40, 40, this.onClickHideStudent, this, tltpHide);
 
-        const bGameMaster = isGameMaster();
         btnShowStudent.setVisible(bGameMaster);
         btnHideStudent.setVisible(false);
         controlPanel.setVisible(bGameMaster);
@@ -198,7 +198,7 @@ var GameScene = new Phaser.Class({
             btnCollapse,
             sprFoundFrame,
             sprFoundbg,
-            isShowFounds: (currentPlayer && currentPlayer.gamemaster && currentPlayer.isLocal) ? true : false
+            isShowFounds: isGameMaster() ? true : false
         };
         this.updateLabel();
         // draw circles
@@ -231,8 +231,7 @@ var GameScene = new Phaser.Class({
         container.add(image);
         image.on('pointerdown', function(pt, x, y, e) {
             // check controlsEnabled
-            if (!currentPlayer.controlsEnabled || !localPlayerIds.includes(currentPlayer.personId))
-                return;
+            if (!isLocalPlayerEnabled()) return;
             // if controls is enabled
             sendToGameshell({
                 eventType: "sendToAll",
@@ -326,7 +325,7 @@ var GameScene = new Phaser.Class({
      * @param {boolean} flag 
      */
     toggleShowFound: function(isShowFounds) {
-        if (currentPlayer && currentPlayer.gamemaster && currentPlayer.isLocal) return;
+        if (isGameMaster()) return;
         
         this.state = {...this.state, isShowFounds};
         const {sprFoundFrame, sprFoundbg, lblFound} = this.state;
@@ -398,8 +397,8 @@ var GameScene = new Phaser.Class({
                 this.showGreatJob();
             }
         }
-        if (currentPlayer)
-            this.updateLabel();
+        
+        this.updateLabel();
     },
     /**
      * draw circle on images
@@ -499,7 +498,7 @@ var GameScene = new Phaser.Class({
         this.state = {...this.state, isGameEnded};
 
         setTimeout(() => {     
-            const dY = (currentPlayer && currentPlayer.gamemaster && currentPlayer.isLocal) ? 100 : 0;
+            const dY = (isGameMaster()) ? 100 : 0;
             const sprWin = this.add.sprite(GAME_WIDTH/2, GAME_HEIGHT/2-dY, "sprWin").setInteractive();
             this.tweens.add({
                 targets: sprWin,
@@ -507,7 +506,7 @@ var GameScene = new Phaser.Class({
                 ease: 'Bounce',
                 duration: 300,
                 onComplete: function() {
-                    if (currentPlayer && currentPlayer.gamemaster && currentPlayer.isLocal) {
+                    if (isGameMaster()) {
                         self.createButton('btnGallery', GAME_WIDTH/2, GAME_HEIGHT/2+100, 140, 40, self.onClickGallery, self);
                     }
                 }
@@ -535,7 +534,7 @@ var GameScene = new Phaser.Class({
         if (isGameEnded) return;
         btnShowStudent.setVisible(false);
         btnHideStudent.setVisible(true);
-        if (currentPlayer && currentPlayer.gamemaster) {
+        if (isGameMaster()) {
             const type = "showForStudent";
             sendToGameshell({
                 eventType: "sendToAll",
@@ -554,7 +553,7 @@ var GameScene = new Phaser.Class({
         if (isGameEnded) return;
         btnShowStudent.setVisible(true);
         btnHideStudent.setVisible(false);
-        if (currentPlayer && currentPlayer.gamemaster) {
+        if (isGameMaster()) {
             const type = "hideForStudent";
             sendToGameshell({
                 eventType: "sendToAll",
