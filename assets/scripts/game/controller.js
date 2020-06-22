@@ -47,6 +47,7 @@ function setTheme(themeName = {theme: "default"}) {
   currentThemeName = themeName.theme;
   console.log(currentThemeName)
   currentTheme = themes[currentThemeName];
+  $('#game').css('background-image', `url(${currentTheme.backImage})`);
 }
 
 /**

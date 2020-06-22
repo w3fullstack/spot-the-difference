@@ -10,7 +10,6 @@ body {
 }
 
 #game {
-  background-image: url('../images/background.png');
   background-position: center;
   width: 100vw;
   height: 100vh;

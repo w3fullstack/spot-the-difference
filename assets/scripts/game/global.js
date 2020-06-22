@@ -62,6 +62,8 @@ var gGameStarted = false;
 
 let currentThemeName = "default";
 let currentTheme = themes["default"];
+$('#game').css('background-image', `url(${currentTheme.backImage})`);
+
 // 1 is student userType
 let userType = 1;
 
