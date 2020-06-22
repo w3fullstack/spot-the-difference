@@ -61,15 +61,13 @@ function isGameStarted() {
  * Starts/Restarts a new game
  * Advances the game from the intro screen into the game area
  */
-function startGame(startingPlayerId = null) {
+function startGame() {
     console.log("~~~~~~~~~~~~~~start game")
     // if game is already defined, destroy
     if (game !== null) {
         game.destroy(true);
     }
-    // if (startingPlayerId) {
-    //     gCurrentPlayer = gPlayers[startingPlayerId];
-    // }
+
     setTimeout(() => {
             // start new game
         const config = {
@@ -141,10 +139,13 @@ function setLocalPlayers(playerIds) {
  * @param {*} player The player object
  */
 function updatePlayerControls(player) {
-  if (!player) return;
+  if (!player || !players) return;
 
-  if (currentPlayer && currentPlayer.personId === player.personId) {
-    currentPlayer.controlsEnabled = player.controlsEnabled;
+  for (var personId in players) {
+    if (personId == player.personId) {
+      players[personId].controlsEnabled = player.controlsEnabled;
+      break;
+    }
   }
 }
 
@@ -166,6 +167,17 @@ function setPlayers(allPlayers) {
   updatePlayers();
 }
 
+// checks if at least one local player has their controlsEnabled set to true
+function isLocalPlayerEnabled() {
+  var enabled = false;
+  // clear the players list
+  for (var playerId in players) {
+    enabled = players[playerId].controlsEnabled && players[playerId].isLocal;
+    if (enabled) break;
+  }
+  return enabled;
+}
+
 /**
  * Updates the current game's state to match the incoming state
  *
@@ -179,7 +191,7 @@ function setGameState(gameState) {
 
   // start/restart the game
   if (gameState.isGameStarted) {
-    startGame(currentPlayer);
+    startGame();
   }
 
   currentPlayer = gameState.currentPlayer;
