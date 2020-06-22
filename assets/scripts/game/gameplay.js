@@ -423,17 +423,33 @@ var GameScene = new Phaser.Class({
      * @param {*} container 
      */
     createCircle: function(x, y, radius, container, color) {
-        const circle = this.add.circle(x, y, radius);
+        const circleContainer = this.add.container(x-radius-5, y-radius-5);
+        circleContainer.setSize(radius*2+10, radius*2+10);
+
+        const circleGlow = this.add.circle(radius+5, radius+5, radius);
+        circleGlow.setStrokeStyle(10, currentTheme.glowSpotColor, 0.5);
+        circleContainer.add(circleGlow);
+
+        const circle = this.add.circle(radius+5, radius+5, radius);
         circle.setStrokeStyle(5, color, 1);
-        container.add(circle);
-        console.log(circle)
+        circleContainer.add(circle);
+
+        container.add(circleContainer);
+
         this.tweens.add({
             targets: circle,
             scale: { from: 0, to: 1},
             ease: 'Bounce',
             duration: 200
         });
-        return circle;
+        this.tweens.add({
+            targets: circleGlow,
+            scale: { from: 0, to: 1},
+            ease: 'Bounce',
+            duration: 200
+        });
+
+        return circleContainer;
     },
     /**
      * create button (`Show for Student`, `Show Won`, `Reveal for Me`)
